@@ -5,6 +5,7 @@ import 'package:exerlog/Models/exercise.dart';
 import 'package:exerlog/Models/sets.dart';
 import 'package:exerlog/Models/workout.dart';
 import 'package:exerlog/Models/workout_data.dart';
+import 'package:exerlog/UI/calendar/calendar_page.dart';
 import 'package:exerlog/UI/exercise/add_exercise_widget.dart';
 import 'package:exerlog/UI/exercise/add_new_exercise_alert.dart';
 import 'package:exerlog/UI/exercise/exercise_card.dart';
@@ -19,7 +20,8 @@ import '../gradient_button.dart';
 import '../global.dart';
 
 class WorkoutPage extends StatefulWidget {
-  const WorkoutPage();
+  Workout? workout;
+  WorkoutPage(this.workout);
 
   @override
   _WorkoutPageState createState() => _WorkoutPageState();
@@ -30,13 +32,13 @@ class _WorkoutPageState extends State<WorkoutPage> {
   late WorkoutData workoutData;
   String exerciseName = '';
   late bool firstLoad;
-  late Workout workout;
 
   @override
   void initState() {
-    print("init");
-    firstLoad = true;
-    workout = new Workout(
+print("init");
+    if (widget.workout == null) {
+      firstLoad = true;
+       widget.workout = new Workout(
       [],
       '',
       '',
@@ -44,10 +46,18 @@ class _WorkoutPageState extends State<WorkoutPage> {
       '',
       '',
       false,
+      
     );
-    // TODO: implement initState
     workoutData = new WorkoutData(
-        workout, new WorkoutTotals(0, 0, 0, 0, 0), updateTotals, addNewSet);
+        widget.workout!, new WorkoutTotals(0, 0, 0, 0, 0), updateTotals, addNewSet);
+    } else {
+      firstLoad = false;
+      workoutData = new WorkoutData(
+        widget.workout!, new WorkoutTotals(0, 0, 0, 0, 0), updateTotals, addNewSet);
+      addExercises(widget.workout);
+    }
+    // TODO: implement initState
+  
 
     super.initState();
   }
@@ -72,7 +82,28 @@ class _WorkoutPageState extends State<WorkoutPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(),
+                    Container(
+                      padding: EdgeInsets.only(top: screenHeight*0.03),
+                      height: screenHeight *0.05,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [BackButton(
+                          onPressed: () {
+                            print("hello");
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => CalendarPage(
+                                ),
+                              ),
+                            );
+                          },
+                          color: greenTextColor,
+                        ),
+                        Container()
+                        ]
+                      ),
+                    ),
                     WorkoutTotalsWidget(
                       totals: workoutData.totals,
                     ),
@@ -87,6 +118,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                       height: screenHeight * 0.065,
                       width: screenWidth * 0.9,
                       child: GradientBorderButton(
+                        addButton: true,
                         gradient: LinearGradient(
                           colors: <Color>[Color(0xFF34D1C2), Color(0xFF31A6DC)],
                         ),
@@ -257,7 +289,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
           new WorkoutTotals(0, 0, 0, 0, 0), updateTotals, addNewSet);
       firstLoad = false;
       workoutData = newWorkoutData;
-      workout = newWorkoutData.workout;
+      widget.workout = newWorkoutData.workout;
       //print(workoutData.workout.exercises[0]);
     });
   }
