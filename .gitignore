@@ -1,6 +1,36 @@
 android/app/upload-keystore.jks
 android/app/upload-keystore.jks  
 # Miscellaneous
+# Archive preparation: secrets and platform build output
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*service*account*.json
+*firebase-adminsdk*.json
+credentials*.json
+secrets.*
+key.properties
+local.properties
+.gradle/
+.cxx/
+Pods/
+DerivedData/
+xcuserdata/
+.symlinks/
+ephemeral/
+build/
+dist/
+out/
+coverage/
+Thumbs.db
+
 *.class
 *.log
 *.pyc
@@ -46,3 +76,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Local credentials and authentication/debug logs.
+secret.json
+secrets.json
+*.credentials.json
+.pypirc
+.netrc
